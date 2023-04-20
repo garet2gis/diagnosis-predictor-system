@@ -11,6 +11,12 @@ func main() {
 
 	l := logger.NewLogger(cfg.ToLoggerConfig())
 
+	// TODO: broker for async requests
+	//_, err := broker.NewNATSClient(cfg.ToNATSConfig())
+	//if err != nil {
+	//	l.Fatal(err)
+	//}
+
 	webApp := server.NewApp(cfg, l)
 	webApp.Start()
 }

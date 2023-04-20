@@ -43,7 +43,7 @@ func (s *Server) InitRouter() {
 	router.Use(logger.WithLogger(s.logger))
 
 	router.Route("/api/v1", func(router chi.Router) {
-		router.Post("/some_ai_model", middleware.ErrorMiddleware(s.TestModel))
+		router.Post("/basic_model", middleware.ErrorMiddleware(s.BasicModel))
 	})
 
 	s.router = router

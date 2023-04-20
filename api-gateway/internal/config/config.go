@@ -1,6 +1,7 @@
 package config
 
 import (
+	"api-gateway/pkg/broker"
 	"api-gateway/pkg/logger"
 	"log"
 	"sync"
@@ -22,9 +23,20 @@ type LoggerConfig struct {
 	LoggingLevel    string `env:"LOGGING_LEVEL" env-default:"trace"`
 }
 
+type NatsConfig struct {
+	NatsURI               string `env:"NATS_URI" env-required:"true"`
+	MaxConnectionAttempts int    `env:"MAX_CONN_ATTEMPTS" env-default:"5"`
+}
+
+type ServicesURL struct {
+	BasicModel string `env:"BASIC_MODEL_URL" env-required:"true"`
+}
+
 type Config struct {
 	HTTPConfig
 	LoggerConfig
+	NatsConfig
+	ServicesURL
 }
 
 var instance *Config
@@ -51,5 +63,12 @@ func (c Config) ToLoggerConfig() logger.LoggerConfig {
 		ReportCaller:    c.ReportCaller,
 		IsJSONFormatter: c.IsJSONFormatter,
 		LoggingLevel:    c.LoggingLevel,
+	}
+}
+
+func (c Config) ToNATSConfig() broker.Config {
+	return broker.Config{
+		NatsURI:               c.NatsConfig.NatsURI,
+		MaxConnectionAttempts: c.NatsConfig.MaxConnectionAttempts,
 	}
 }

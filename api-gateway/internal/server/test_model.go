@@ -1,28 +1,62 @@
 package server
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 )
 
-type TestModelInput struct {
-	BloodAnalysis string `json:"blood_analysis"`
-	Symptom       string `json:"symptom"`
+type Response struct {
+	Disease     string   `json:"Disease"`
+	Description string   `json:"Description"`
+	Precaution  []string `json:"Precaution"`
 }
 
-func (s *Server) TestModel(w http.ResponseWriter, r *http.Request) error {
-	var input TestModelInput
+func (s *Server) BasicModel(w http.ResponseWriter, r *http.Request) error {
+	var input []string
 
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
 		return err
 	}
 
-	// TODO: pass input to message broker
+	reqBody, err := json.Marshal(input)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest(
+		"POST",
+		s.cfg.ServicesURL.BasicModel,
+		bytes.NewBuffer(reqBody),
+	)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	defer resp.Body.Close()
+
+	var output Response
+
+	err = json.NewDecoder(resp.Body).Decode(&output)
+	if err != nil {
+		return err
+	}
+
+	outputJson, err := json.Marshal(output)
+	if err != nil {
+		return err
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 
 	w.WriteHeader(http.StatusOK)
 
-	w.Write([]byte(input.Symptom))
+	w.Write(outputJson)
 
 	return nil
 }
