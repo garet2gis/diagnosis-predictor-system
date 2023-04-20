@@ -21,7 +21,7 @@ class ModelPrediction:
 
     def prediction(self, data: list) -> dict:
         self.__json_to_dict()
-        pred = self._model.predict([data])[0]
+        pred = self._model.predict([data])[0].strip()
         descr = self.di_description[pred]
         precaution = self.di_precaution[pred]
         return {'Disease': self.disease_eng_to_ru[pred],
