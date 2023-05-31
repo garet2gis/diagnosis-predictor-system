@@ -12,6 +12,7 @@ require (
 
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
+	github.com/go-chi/cors v1.2.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect
 	github.com/nats-io/nats-server/v2 v2.9.16 // indirect
