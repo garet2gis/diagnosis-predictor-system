@@ -58,6 +58,7 @@ func (s *Server) InitRouter() {
 
 	router.Route("/api/v1", func(router chi.Router) {
 		router.Post("/basic_model", middleware.ErrorMiddleware(s.BasicModel))
+		router.Post("/text_model", middleware.ErrorMiddleware(s.TextModel))
 	})
 
 	s.router = router

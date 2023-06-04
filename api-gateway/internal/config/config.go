@@ -30,6 +30,7 @@ type NatsConfig struct {
 
 type ServicesURL struct {
 	BasicModel string `env:"BASIC_MODEL_URL" env-required:"true"`
+	TextModel  string `env:"TEXT_MODEL_URL" env-required:"true"`
 }
 
 type Config struct {
