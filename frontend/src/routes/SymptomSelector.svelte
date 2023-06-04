@@ -5,15 +5,7 @@
 
 	const apiBaseUrl = import.meta.env.API_BASE_URL || 'http://0.0.0.0:2228';
 
-	const symptoms: string[] = [
-		'Кожная сыпь',
-		'Дрожь',
-		'Обнаружение мочеиспускания',
-		'Зуд',
-		'Узловые высыпания на коже'
-	];
-
-	const searchStore = createSearchSymptomsStore(symptoms);
+	const searchStore = createSearchSymptomsStore();
 
 	let copySelectedSymptoms: string[] = [];
 	const unsubscribe = searchStore.subscribe((value) => {
@@ -84,7 +76,13 @@
 			</div>
 		</div>
 
-		<button class="button" type="submit">Получить <br />диагноз</button>
+		<button
+			class="button"
+			type="submit"
+			disabled={copySelectedSymptoms.length < 3}
+			class:disabled={copySelectedSymptoms.length < 3}
+			>Получить <br />диагноз
+		</button>
 	</form>
 
 	<div class="symptoms_result">
@@ -97,23 +95,29 @@
 
 		{#if diseaseResult}
 			<div class="disease_info">
-				<div class="disease">
-					{diseaseResult.Disease}
-				</div>
-				<div class="description">
-					<b>Описание</b>
-					<br />
-					{diseaseResult.Description}
-				</div>
-				<ul class="precaution">
-					<b>Рекомендации</b>
-
-					<div class="recs">
-						{#each diseaseResult.Precaution as p, i}
-							<li value={i}>{p}</li>
-						{/each}
+				{#if diseaseResult.Disease}
+					<div class="disease">
+						{diseaseResult.Disease}
 					</div>
-				</ul>
+				{/if}
+				{#if diseaseResult.Description}
+					<div class="description">
+						<b>Описание</b>
+						<br />
+						{diseaseResult.Description}
+					</div>
+				{/if}
+				{#if Array.isArray(diseaseResult.Precaution)}
+					<ul class="precaution">
+						<b>Рекомендации</b>
+
+						<div class="recs">
+							{#each diseaseResult.Precaution as p, i}
+								<li value={i}>{p}</li>
+							{/each}
+						</div>
+					</ul>
+				{/if}
 			</div>
 		{:else}
 			<div class="disease_info skeleton">...ваше заболевание</div>
@@ -301,5 +305,10 @@
 		font-size: 12px;
 		color: #1e88e5;
 		pointer-events: none;
+	}
+
+	.disabled {
+		background-color: gray;
+		cursor: not-allowed;
 	}
 </style>
